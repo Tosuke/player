@@ -1,0 +1,65 @@
+{
+  "name": "player",
+  "version": "1.0.0",
+  "description": "something",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack-serve --config build/webpack.config.js",
+    "serve": "run-s serve:build serve:firebase",
+    "serve:build": "run-p serve:build:*",
+    "serve:build:function": "npm --prefix 'functions' run build",
+    "serve:build:client": "webpack --config build/webpack.config.js --mode development --progress",
+    "serve:firebase": "firebase serve -p 8080",
+    "analyze": "webpack --config build/webpack.config.js --mode production --json | webpack-bundle-size-analyzer",
+    "build": "webpack --config build/webpack.config.js --mode production --progress",
+    "deploy": "run-s build deploy:firebase",
+    "deploy:firebase": "firebase deploy"
+  },
+  "dependencies": {
+    "@firebase/app": "^0.1.10",
+    "@firebase/app-types": "^0.1.2",
+    "@firebase/auth": "^0.4.1",
+    "@firebase/firestore": "^0.3.7",
+    "firebase": "^4.12.1",
+    "vue": "^2.5.16"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-minify-dead-code-elimination": "^0.4.0",
+    "babel-preset-vue-app": "^2.0.0",
+    "cross-env": "^5.1.4",
+    "css-loader": "^0.28.11",
+    "dotenv-webpack": "^1.5.5",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "file-loader": "^1.1.11",
+    "html-webpack-plugin": "^3.2.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.0.4",
+    "npm-run-all": "^4.1.2",
+    "preload-webpack-plugin": "^3.0.0-alpha.1",
+    "prettier": "^1.11.1",
+    "script-ext-html-webpack-plugin": "^2.0.1",
+    "vue-loader": "^14.2.2",
+    "vue-style-loader": "^4.1.0",
+    "vue-template-compiler": "^2.5.16",
+    "webpack": "^4.5.0",
+    "webpack-bundle-size-analyzer": "^2.7.0",
+    "webpack-cli": "^2.0.14",
+    "webpack-serve": "^0.3.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Tosuke/player.git"
+  },
+  "author": "Tosuke",
+  "license": "MIT",
+  "browserslist": [
+    ">1% in JP"
+  ],
+  "bugs": {
+    "url": "https://github.com/Tosuke/player/issues"
+  },
+  "homepage": "https://github.com/Tosuke/player#readme",
+  "private": true
+}

@@ -1,0 +1,6 @@
+/node_modules
+/lib
+/etc
+/.env
+/env
+/yarn-error.log
