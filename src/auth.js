@@ -1,4 +1,5 @@
 import firebase from '@/firebase'
+import store from '@/store'
 
 const SCOPES = [
   'https://www.googleapis.com/auth/userinfo.email',
@@ -29,25 +30,30 @@ export function createOAuthURL() {
 
 export async function processRedirectResult() {
   let hash = window.location.hash
-  if (hash === '') return null
+  if (hash === '') return
   hash = hash.substring(1)
   const params = new URLSearchParams(hash)
-  window.location.hash = ''
-  if(params.has('error')) throw new Error(params.get('error'))
-  
-  const accessToken = params.get('access_token')
-  const expiresIn = parseInt(params.get('expires_in'), 10)
-  const refreshToken = params.get('refresh_token')
-  const idToken = params.get('id_token')
+  if (params.has('error')) throw new Error(params.get('error'))
 
-  const credential = firebase.auth.GoogleAuthProvider.credential(idToken, accessToken)
-  const user = await firebase.auth().signInWithCredential(credential)
-  
-  const db = firebase.firestore()
-  const userTokens = db.collection('userTokens')
-  await userTokens.doc(user.uid).set({
-    accessToken, refreshToken
+  const accessToken = get('access_token')
+  const expiresIn = parseInt(get('expires_in'), 10)
+  const refreshToken = get('refresh_token')
+  const idToken = get('id_token')
+
+  await store.dispatch('signIn', {
+    accessToken,
+    expiresIn,
+    refreshToken,
+    idToken
   })
 
-  return user
+  window.location.hash = ''
+
+  function get(name) {
+    if (params.has(name)) {
+      return params.get(name)
+    } else {
+      throw new Error(`"${name}" is required`)
+    }
+  }
 }

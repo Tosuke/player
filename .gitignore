@@ -4,3 +4,4 @@
 /.env
 *.log
 /.firebaserc
+/stats.json

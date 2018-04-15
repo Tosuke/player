@@ -1,28 +1,23 @@
 <template>
   <div id="app">
-    Hello World! {{ mes }}
-    <LoginButton/>
-    <button @click="logout">ログアウト</button>
+    <v-app>
+      <Header/>
+      <v-content>
+        <v-container fluid>
+          <router-view/>
+        </v-container>
+      </v-content>
+    </v-app>
   </div>
 </template>
 
 <script>
 import firebase from '@firebase/app'
-import LoginButton from '@/components/LoginButton'
+import Header from '@/components/Header'
 
 export default {
   components: {
-    LoginButton
-  },
-  data() {
-    return {
-      mes: firebase.auth().currentUser !== null
-    }
-  },
-  methods: {
-    async logout() {
-      await firebase.auth().signOut()
-    }
+    Header
   }
 }
 </script>

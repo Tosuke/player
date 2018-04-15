@@ -1,7 +1,11 @@
-import { initializeFirebase } from '@/firebase'
-import { initializeVue } from '@/initialize/vue'
+import firebase, { initialize as initializeFirebase } from '@/firebase'
+import { initialize as initializeVue } from '@/initialize/vue'
 import { processRedirectResult } from '@/auth'
 
-initializeFirebase()
-initializeVue()
-processRedirectResult()
+async function main() {
+  initializeFirebase()
+  await processRedirectResult()
+  initializeVue()
+}
+
+main()

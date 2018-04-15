@@ -1,7 +1,9 @@
 const path = require('path')
+const { VueLoaderPlugin } = require('vue-loader')
 const DotenvPlugin = require('dotenv-webpack')
 const HtmlPlugin = require('html-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const ExtractCSSPlugin = require('mini-css-extract-plugin')
+const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const PreloadPlugin = require('preload-webpack-plugin')
 const ScriptExtPlugin = require('script-ext-html-webpack-plugin')
 
@@ -28,12 +30,24 @@ module.exports = (env, argv) => {
         }
       ]
     ],
-    plugins: [...(isProduction ? ['minify-dead-code-elimination'] : [])]
+    plugins: [
+      [
+        'transform-imports',
+        {
+          vuetify: {
+            transform: 'vuetify/es5/components/${member}',
+            preventFullImport: true
+          }
+        }
+      ],
+      ...(isProduction ? ['minify-dead-code-elimination'] : [])
+    ]
   }
 
   const dotEnvPaths = [
     {
-      path: 'env/.env', example: 'env/.env.example'
+      path: 'env/.env',
+      example: 'env/.env.example'
     },
     {
       path: `env/.env-${isProduction ? 'prod' : 'dev'}`,
@@ -41,13 +55,17 @@ module.exports = (env, argv) => {
     }
   ]
 
+  const generateCSSRule = loaders => ({
+    use: [
+      isProduction ? ExtractCSSPlugin.loader : 'vue-style-loader',
+      ...loaders
+    ]
+  })
+
   const rules = [
     {
       test: /\.vue$/,
       loader: 'vue-loader',
-      options: {
-        extractCSS: isProduction
-      }
     },
     {
       test: /\.js$/,
@@ -57,12 +75,19 @@ module.exports = (env, argv) => {
     },
     {
       test: /\.css$/,
-      use: isProduction
-        ? ExtractTextPlugin.extract({
-            use: 'css-loader',
-            fallback: 'vue-style-loader'
-          })
-        : ['vue-style-loader', 'css-loader']
+      ...generateCSSRule(['css-loader'])
+    },
+    {
+      test: /\.styl$/,
+      ...generateCSSRule(['css-loader', 'stylus-loader'])
+    },
+    {
+      test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+      loader: 'url-loader',
+      options: {
+        limit: 10000,
+        name: 'img/[name].[hash:7].[ext]'
+      }
     }
   ]
 
@@ -75,6 +100,7 @@ module.exports = (env, argv) => {
           systemvars: true
         })
     ),
+    new VueLoaderPlugin(),
     new HtmlPlugin({
       filename: 'index.html',
       template: resolve('./src/index.html'),
@@ -102,10 +128,11 @@ module.exports = (env, argv) => {
           new ScriptExtPlugin({
             defaultAttribute: 'defer'
           }),
-
-          new ExtractTextPlugin({
-            filename: '[name].css'
-          })
+          new ExtractCSSPlugin({
+            filename: '[name].css',
+            chunkFilename: '[id].css'
+          }),
+          new OptimizeCSSPlugin()
         ]
       : [])
   ]
@@ -141,6 +168,7 @@ module.exports = (env, argv) => {
     module: {
       rules
     },
-    plugins
+    plugins,
+    optimization
   }
 }
