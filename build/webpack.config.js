@@ -14,35 +14,7 @@ function resolve(dir) {
 module.exports = (env, argv) => {
   const mode = (argv || {}).mode || 'development'
   const isProduction = mode === 'production'
-
-  const targetBrowsers = isProduction
-    ? ['>1% in JP']
-    : ['last 2 chrome versions']
-
-  const babelConfig = {
-    presets: [
-      [
-        'vue-app',
-        {
-          targets: {
-            browsers: targetBrowsers
-          }
-        }
-      ]
-    ],
-    plugins: [
-      [
-        'transform-imports',
-        {
-          vuetify: {
-            transform: 'vuetify/es5/components/${member}',
-            preventFullImport: true
-          }
-        }
-      ],
-      ...(isProduction ? ['minify-dead-code-elimination'] : [])
-    ]
-  }
+  process.env.NODE_ENV = isProduction ? 'production' : 'development'
 
   const dotEnvPaths = [
     {
@@ -55,23 +27,25 @@ module.exports = (env, argv) => {
     }
   ]
 
-  const generateCSSRule = loaders => ({
-    use: [
-      isProduction ? ExtractCSSPlugin.loader : 'vue-style-loader',
-      ...loaders
-    ]
-  })
-
+  function generateCSSRule(loaders) {
+    return {
+      use: [
+        isProduction ? ExtractCSSPlugin.loader : 'vue-style-loader',
+        ...loaders
+      ]
+    }
+  }
+  
   const rules = [
     {
       test: /\.vue$/,
-      loader: 'vue-loader',
+      loader: 'vue-loader'
     },
     {
       test: /\.js$/,
       exclude: /node_modules/,
       loader: 'babel-loader',
-      options: babelConfig
+      options: require('./.babelrc')
     },
     {
       test: /\.css$/,
