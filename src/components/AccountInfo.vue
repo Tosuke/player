@@ -64,13 +64,14 @@
   </div>
 </template>
 
-<script>
-import firebase from '@/firebase'
+<script lang="ts">
+import Vue from 'vue'
+import VAvatar from 'vuetify-components/VAvatar'
+import VDialog from 'vuetify-components/VDialog'
 import store from '@/store'
 import { mapState } from 'vuex'
-import { VAvatar, VDialog } from 'vuetify'
 
-export default {
+export default Vue.extend({
   components: {
     VAvatar,
     VDialog
@@ -107,5 +108,5 @@ export default {
       this.$router.push('/login')
     }
   }
-}
+})
 </script>

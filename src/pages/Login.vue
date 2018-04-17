@@ -20,11 +20,13 @@
   </v-jumbotron>
 </template>
 
-<script>
-import { VJumbotron, VAvatar} from 'vuetify'
+<script lang="ts">
+import Vue from 'vue'
+import VJumbotron from 'vuetify-components/VJumbotron'
+import VAvatar from 'vuetify-components/VAvatar'
 import { createOAuthURL } from '@/auth'
 
-export default {
+export default Vue.extend({
   components: {
     VJumbotron,
     VAvatar
@@ -34,6 +36,5 @@ export default {
       window.location.href = createOAuthURL()
     }
   }
-}
+})
 </script>
-

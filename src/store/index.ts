@@ -15,13 +15,13 @@ export default new Vuex.Store({
   },
   actions: {
     async signIn({ commit }, { accessToken, refreshToken, idToken }) {
-      const credential = firebase.auth.GoogleAuthProvider.credential(
+      const credential = firebase.auth!.GoogleAuthProvider.credential(
         idToken,
         accessToken
       )
-      const user = await firebase.auth().signInWithCredential(credential)
+      const user = await firebase.auth!().signInWithCredential(credential)
 
-      const db = firebase.firestore()
+      const db = firebase.firestore!()
       const userTokens = db.collection('userTokens')
       await userTokens.doc(user.uid).set({
         accessToken,
@@ -31,14 +31,18 @@ export default new Vuex.Store({
       commit('updateUser', { user })
     },
     async signOut({ commit }) {
-      await firebase.auth().signOut()
+      await firebase.auth!().signOut()
       commit('updateUser', { user: null })
     },
     async deleteUser({ commit }) {
-      const user = firebase.auth().currentUser
-      const db = firebase.firestore()
+      const user = firebase.auth!().currentUser
+      if (user === null) throw new Error()
+
+      const db = firebase.firestore!()
       const userTokenRef = db.collection('userTokens').doc(user.uid)
       const userToken = await userTokenRef.get().then(doc => doc.data())
+      if (userToken == null) throw new Error()
+
       await Promise.all([
         revokeToken(userToken.refreshToken),
         revokeToken(userToken.accessToken)
@@ -48,9 +52,9 @@ export default new Vuex.Store({
       await user.delete()
       commit('updateUser', { user: null })
 
-      async function revokeToken(token) {
+      async function revokeToken(token: string) {
         await firebase
-          .functions()
+          .functions!()
           .httpsCallable('revokeToken')({ token })
           .catch(e => {
             console.error(e)

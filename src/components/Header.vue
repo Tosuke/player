@@ -15,23 +15,26 @@
   </header>
 </template>
 
-<script>
-import { mapState } from 'vuex'
-import { VTextField } from 'vuetify'
-import AccountInfo from '@/components/AccountInfo'
-import SearchField from '@/components/SearchField'
+<script lang="ts">
+import Vue from 'vue'
+import VTextField from 'vuetify-components/VTextField'
+import AccountInfo from '@/components/AccountInfo.vue'
+import SearchField from '@/components/SearchField.vue'
+import store from '@/store'
 
-export default {
+export default Vue.extend({
   components: {
     VTextField,
     AccountInfo,
     SearchField
   },
   computed: {
-    ...mapState(['user']),
+    user() {
+      return store.state.user
+    },
     isLogin() {
       return this.user !== null
     }
   }
-}
+})
 </script>

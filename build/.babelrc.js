@@ -14,6 +14,7 @@ module.exports = {
         useBuiltIns: 'usage',
       }
     ],
+    '@babel/typescript',
     'vue'
   ],
   plugins: [

@@ -32,25 +32,23 @@
   </v-menu>
 </template>
 
-<script>
-import { VTextField } from 'vuetify'
+<script lang="ts">
+import VTextField from 'vuetify-components/VTextField'
+import Vue from 'vue'
 
-export default {
-  components: { 
+export default Vue.extend({
+  components: {
     VTextField
   },
   data() {
     return {
       text: '',
       focused: false,
-      histories: [
-        '蒼き鋼のアルペジオ',
-        '魔法少女まどか☆マギカ'
-      ]
+      histories: ['蒼き鋼のアルペジオ', '魔法少女まどか☆マギカ']
     }
   },
   computed: {
-    flat() {
+    flat(): boolean {
       return !this.focused && this.text === ''
     }
   },
@@ -59,5 +57,5 @@ export default {
       this.text = ''
     }
   }
-}
+})
 </script>

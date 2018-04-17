@@ -17,7 +17,7 @@ export function initialize() {
     messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID
   })
 
-  firebase.auth().onAuthStateChanged(user => {
+  firebase.auth!().onAuthStateChanged(user => {
     store.commit('updateUser', { user })
   })
 }

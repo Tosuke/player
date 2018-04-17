@@ -2,8 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store'
 
-const Login = () => import(/* webpackChunkName: "login" */ '@/pages/Login')
-const Works = () => import(/* webpackChunkName: "works" */ '@/pages/Works')
+const Login = () => import(/* webpackChunkName: "login" */ '@/pages/Login.vue')
+const Works = () => import(/* webpackChunkName: "works" */ '@/pages/Works.vue')
 
 Vue.use(Router)
 

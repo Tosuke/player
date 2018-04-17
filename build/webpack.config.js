@@ -35,14 +35,14 @@ module.exports = (env, argv) => {
       ]
     }
   }
-  
+
   const rules = [
     {
       test: /\.vue$/,
       loader: 'vue-loader'
     },
     {
-      test: /\.js$/,
+      test: /\.[jt]s$/,
       exclude: /node_modules/,
       loader: 'babel-loader',
       options: require('./.babelrc')
@@ -126,17 +126,18 @@ module.exports = (env, argv) => {
   return {
     mode,
     entry: {
-      app: resolve('./src/index.js')
+      app: resolve('./src/index.ts')
     },
     output: {
       path: resolve('./public'),
       filename: '[name].js'
     },
     resolve: {
-      extensions: ['.js', '.vue'],
+      extensions: ['.ts', '.js', '.vue'],
       alias: {
         vue$: 'vue/dist/vue.runtime.esm.js',
-        '@': resolve('./src')
+        '@': resolve('./src'),
+        'vuetify-components': 'vuetify/es5/components'
       }
     },
     module: {

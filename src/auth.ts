@@ -21,7 +21,7 @@ export function createOAuthURL() {
   param.append('access_type', 'offline')
   param.append('response_type', 'code')
   param.append('scope', SCOPES.join(' '))
-  param.append('include_granted_scopes', true)
+  param.append('include_granted_scopes', 'true')
   param.append('prompt', 'consent')
   // TODO:state
 
@@ -33,7 +33,7 @@ export async function processRedirectResult() {
   if (hash === '') return
   hash = hash.substring(1)
   const params = new URLSearchParams(hash)
-  if (params.has('error')) throw new Error(params.get('error'))
+  if (params.has('error')) throw new Error(params.get('error') || '')
 
   const accessToken = get('access_token')
   const expiresIn = parseInt(get('expires_in'), 10)
@@ -49,9 +49,9 @@ export async function processRedirectResult() {
 
   window.location.hash = ''
 
-  function get(name) {
+  function get(name: string): string {
     if (params.has(name)) {
-      return params.get(name)
+      return params.get(name) || ''
     } else {
       throw new Error(`"${name}" is required`)
     }
